@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User{
+  id      Int      @id @default(autoincrement())
+  username    String?  @db.VarChar(255)
+  email   String   @unique @db.VarChar(255)
+  password String   @db.VarChar(255)
+  passengers Passenger[]
+  parcels Parcel[]
+
+}
+
+model Passenger {
+  id             Int      @id @default(autoincrement())
+  fullName       String   @db.VarChar(255)
+  phoneNumber    String   @db.VarChar(255)
+  origin         String   @db.VarChar(255)
+  destination    String   @db.VarChar(255)
+  travelDate     DateTime
+  passportNumber String   @db.VarChar(255)
+  visaNumber     String   @db.VarChar(255)
+  baggageSpace   String?  @db.VarChar(255)
+  notes          String?  @db.Text
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Parcel {
+  id                 Int     @id @default(autoincrement())
+  weight             String
+  productDescription String
+  senderName         String
+  senderNumber       String
+  receiverName       String
+  receiverNumber     String
+  pickupLocation     String   // ✅ New field
+  dropLocation       String   // ✅ New field
+  createdAt          DateTime @default(now())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+
+}
