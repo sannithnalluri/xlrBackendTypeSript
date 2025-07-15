@@ -51,7 +51,7 @@ export const addPassenger = async (req : Request, res : Response) => {
     res.status(201).json({ message: 'Passenger added successfully', passenger });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to add passenger.' });
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Internal Server Error' });
   }
 };
 
@@ -85,4 +85,27 @@ export const getallPassenger = async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).json({ error: 'Failed to retrieve passengers.' });
     }   
+};
+
+export const getPassengersByRoute = async (req: Request, res: Response) => {
+    const { origin, destination } = req.query;
+    console.log("Origin:", origin, "Destination:", destination);
+
+    if (!origin || !destination) {
+        return res.status(400).json({ error: 'Origin and destination are required.' });
+    }
+
+    try {
+        const passengers = await prisma.passenger.findMany({
+           where: {
+            origin: { equals: origin, mode: 'insensitive' },
+            destination: { equals: destination, mode: 'insensitive' },
+}
+        });
+
+        res.status(200).json(passengers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve passengers.' });
+    }
 }
