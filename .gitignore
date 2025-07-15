@@ -3,3 +3,14 @@ node_modules
 .env
 
 /generated/prisma
+
+# Ignore build output
+dist
+# Ignore logs
+*.log
+# Ignore coverage reports
+coverage
+# Ignore temporary files
+*.tmp
+# Ignore IDE specific files
+.idea
