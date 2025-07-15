@@ -2,21 +2,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-
-model User{
-  id      Int      @id @default(autoincrement())
-  username    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
-  password String   @db.VarChar(255)
+model User {
+  id         Int        @id @default(autoincrement())
+  username   String?    @db.VarChar(255)
+  email      String     @unique @db.VarChar(255)
+  password   String     @db.VarChar(255)
   passengers Passenger[]
-  parcels Parcel[]
-
+  parcels    Parcel[]   @relation("SenderParcels")
 }
 
 model Passenger {
@@ -32,20 +29,31 @@ model Passenger {
   notes          String?  @db.Text
   userId         Int
   user           User     @relation(fields: [userId], references: [id])
+  parcels        Parcel[] @relation("ReceiverParcels")
 }
 
 model Parcel {
-  id                 Int     @id @default(autoincrement())
-  weight             String
-  productDescription String
-  senderName         String
-  senderNumber       String
-  receiverName       String
-  receiverNumber     String
-  pickupLocation     String   // ✅ New field
-  dropLocation       String   // ✅ New field
-  createdAt          DateTime @default(now())
-  userId         Int
-  user           User     @relation(fields: [userId], references: [id])
+  id                  Int        @id @default(autoincrement())
+  senderUserId        Int
+  receiverPassengerId Int
 
+  senderName          String
+  senderNumber        String
+  origin              String
+
+  receiverName        String
+  receiverNumber      String
+  dropLocation        String
+
+  weight              String
+  productDescription  String
+  amountToPaid        String
+  paymentReferenceId  String
+
+  TravellinDate       DateTime
+  OrderConfirmed      DateTime   @default(now())
+  createdAt           DateTime   @default(now())
+
+  sender    User      @relation("SenderParcels", fields: [senderUserId], references: [id])
+  receiver  Passenger @relation("ReceiverParcels", fields: [receiverPassengerId], references: [id])
 }

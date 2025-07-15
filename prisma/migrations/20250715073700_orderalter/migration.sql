@@ -28,16 +28,21 @@ CREATE TABLE "Passenger" (
 -- CreateTable
 CREATE TABLE "Parcel" (
     "id" SERIAL NOT NULL,
-    "weight" TEXT NOT NULL,
-    "productDescription" TEXT NOT NULL,
+    "senderUserId" INTEGER NOT NULL,
+    "receiverPassengerId" INTEGER NOT NULL,
     "senderName" TEXT NOT NULL,
     "senderNumber" TEXT NOT NULL,
+    "origin" TEXT NOT NULL,
     "receiverName" TEXT NOT NULL,
     "receiverNumber" TEXT NOT NULL,
-    "pickupLocation" TEXT NOT NULL,
     "dropLocation" TEXT NOT NULL,
+    "weight" TEXT NOT NULL,
+    "productDescription" TEXT NOT NULL,
+    "amountToPaid" TEXT NOT NULL,
+    "paymentReferenceId" TEXT NOT NULL,
+    "TravellinDate" TIMESTAMP(3) NOT NULL,
+    "OrderConfirmed" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Parcel_pkey" PRIMARY KEY ("id")
 );
@@ -49,4 +54,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 ALTER TABLE "Passenger" ADD CONSTRAINT "Passenger_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Parcel" ADD CONSTRAINT "Parcel_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Parcel" ADD CONSTRAINT "Parcel_senderUserId_fkey" FOREIGN KEY ("senderUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Parcel" ADD CONSTRAINT "Parcel_receiverPassengerId_fkey" FOREIGN KEY ("receiverPassengerId") REFERENCES "Passenger"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
